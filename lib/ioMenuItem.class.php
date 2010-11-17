@@ -29,7 +29,8 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
     $_attributes       = array(), // an array of attributes for the li
     $_requiresAuth     = null,    // boolean to require auth to show this menu
     $_requiresNoAuth   = null,    // boolean to require NO auth to show this menu
-    $_credentials      = array(); // array of credentials needed to display this menu
+    $_credentials      = array(), // array of credentials needed to display this menu
+    $_separator        = null;    // separator beetwin menu items
 
   /**
    * Special i18n properties
@@ -1155,6 +1156,9 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
     // render the text/link inside the li tag
     $html .= $this->_format((null !== $this->_route) ? $this->renderLink() : $this->renderLabel(), 'link');
 
+    if ($this->_separator && !$this->isLast())
+      $html .= ' '.$this->_separator.' ';
+
     // renders the embedded ul if there are visible children
     $html .= $this->render($depth, true);
 
@@ -1710,6 +1714,12 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
       }
     }
 
+    if (isset($array['separator']))
+    { 
+      $this->_separator = $array['separator'];
+    }
+
+
     return $this;
   }
 
@@ -1727,7 +1737,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
 
     $name = isset($data['name']) ? $data['name'] : null;
     $menu = new $class($name);
-    $menu->fromArray($data);
+    $menu->fromArray($data);    
 
     return $menu;
   }
